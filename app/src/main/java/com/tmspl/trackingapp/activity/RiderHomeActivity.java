@@ -138,6 +138,10 @@ public class RiderHomeActivity extends FragmentActivity implements OnMapReadyCal
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
             return false;
+
+
+
+
         } else {
             return true;
         }
