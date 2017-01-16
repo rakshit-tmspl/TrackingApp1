@@ -1,5 +1,8 @@
 package com.tmspl.trackingapp.activity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
 import com.tmspl.trackingapp.R;
+import com.tmspl.trackingapp.extras.App;
 import com.tmspl.trackingapp.extras.AppUtils;
-import com.tmspl.trackingapp.extras.Log;
 import com.tmspl.trackingapp.firebasemodel.UserModel;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,11 +62,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (loginResult == SUCCESS) {
 
                                     String role = String.valueOf(dataSnapshot.child("role").getValue());
-
-                                    Log.i(TAG, "" + role);
-
                                     if (role.equals("Rider")) {
-                                        startActivity(new Intent(MainActivity.this, RiderHomeActivity.class));
+                                        Intent intent = new Intent(MainActivity.this, RiderHomeActivity.class);
+                                        ((App) getApplication()).setUserModel(UserModel.fromMap(dataSnapshot.getKey(),
+                                                (Map<String, Object>) dataSnapshot.getValue()));
+                                        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
                                     } else {
                                         startActivity(new Intent(MainActivity.this, UserHomeActivity.class));
                                     }
@@ -73,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
-
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
