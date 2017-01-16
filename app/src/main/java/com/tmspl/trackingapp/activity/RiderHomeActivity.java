@@ -64,6 +64,7 @@ public class RiderHomeActivity extends FragmentActivity implements OnMapReadyCal
         final String uid = ((App) getApplication()).getUserModel().getName();
 
 
+
         if (!uid.isEmpty()) {
             btnOne.setOnClickListener(new AddLocation(this, uid));
             btnTwo.setOnClickListener(new AddlawGardenLocation(this, uid));
