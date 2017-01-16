@@ -44,11 +44,17 @@
         <meta-data
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
+
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"
                 android:value="AIzaSyCd_rTuFksovYB7wO1ZOAnM8bV3koMzoJI" />
 
-        <activity android:name=".activity.RiderHomeActivity"></activity>
+        <service android:name=".extras.GPSTracker"></service>
+
+        <activity android:name=".activity.RiderHomeActivity">
+
+
+        </activity>
     </application>
 
 </manifest>

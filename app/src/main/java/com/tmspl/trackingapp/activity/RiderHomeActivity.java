@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 
 import com.tmspl.trackingapp.R;
 import com.tmspl.trackingapp.extras.App;
+import com.tmspl.trackingapp.extras.GPSTracker;
+import com.tmspl.trackingapp.extras.Log;
 import com.tmspl.trackingapp.firebasemodel.GettingLocation;
 
 import butterknife.BindView;
@@ -47,11 +50,15 @@ public class RiderHomeActivity extends FragmentActivity implements OnMapReadyCal
     Location mLastLocation;
     Marker mCurrLocationMarker;
 
+    GPSTracker gpsTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_home);
         ButterKnife.bind(this);
+
+        gpsTracker = new GPSTracker(RiderHomeActivity.this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -62,7 +69,6 @@ public class RiderHomeActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         final String uid = ((App) getApplication()).getUserModel().getName();
-
 
 
         if (!uid.isEmpty()) {
@@ -240,12 +246,21 @@ public class RiderHomeActivity extends FragmentActivity implements OnMapReadyCal
             final String lat = "23.0203135";
             final String lng = "72.5539719";
 
-            if (!lat.isEmpty() && !lng.isEmpty()) {
-                GettingLocation.addLatLng(new GettingLocation(lat, lng),
-                        uid, dbRef, this);
-            } else {
-                Toast.makeText(RiderHomeActivity.this, "please enter Location", Toast.LENGTH_SHORT).show();
+            if (gpsTracker.canGetLocation()) {
+                final String lat1 = String.valueOf(gpsTracker.getLatitude());
+                final String lng1 = String.valueOf(gpsTracker.getLongitude());
+
+                Log.i("LatLong : -> ", lat1 + " :" + lng1);
+
+                if (!lat1.isEmpty() && !lng1.isEmpty()) {
+                    GettingLocation.addLatLng(new GettingLocation(lat1, lng1),
+                            uid, dbRef, this);
+                } else {
+                    Toast.makeText(RiderHomeActivity.this, "please enter Location", Toast.LENGTH_SHORT).show();
+                }
             }
+
+
         }
 
         @Override
